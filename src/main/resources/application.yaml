@@ -1,0 +1,122 @@
+server:
+  # Porta HTTP do API Gateway
+  port: 8080
+
+  compression:
+    # Habilita compressão HTTP (gzip),
+    # reduzindo tráfego de rede nas respostas
+    enabled: true
+
+  # Faz o Spring interpretar corretamente headers
+  # encaminhados por proxies reversos como:
+  # Nginx, Traefik, Kubernetes Ingress, etc.
+  #
+  # Importante para:
+  # - HTTPS correto
+  # - IP real do cliente
+  # - Host original da requisição
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    # Nome da aplicação registrado no Eureka
+    name: gateway-service
+
+  cloud:
+    gateway:
+
+      # Configurações do cliente HTTP interno do Gateway
+      httpclient:
+
+        # Tempo máximo para estabelecer conexão
+        # com microsserviços
+        connect-timeout: 5000
+
+        # Tempo máximo de espera pela resposta
+        # do microsserviço
+        response-timeout: 10s
+
+      server:
+        webflux:
+          discovery:
+            locator:
+
+              # Habilita criação automática de rotas
+              # usando serviços registrados no Eureka
+              enabled: true
+
+              # Converte o nome dos serviços para minúsculo
+              # evitando inconsistências nas rotas
+              #
+              # Exemplo:
+              # PRODUCT-SERVICE → product-service
+              lower-case-service-id: true
+
+cors:
+  # Lista de origens permitidas para acessar o Gateway.
+  #
+  # Pode ser sobrescrita pela variável:
+  # CORS_ALLOWED_ORIGINS
+  #
+  # Exemplo
+  # https://houpper.com.br,http://localhost:4200
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost:3000}
+
+springdoc:
+  swagger-ui:
+    # Caminho da interface Swagger UI
+    path: /swagger-ui.html
+
+    # APIs disponíveis na documentação centralizada
+    urls:
+      # Especificação OpenAPI do Database Service
+      - name: Database Service
+        url: /database-service/v3/api-docs
+
+eureka:
+  instance:
+    # Faz o Eureka preferir IP ao invés de hostname
+    # nas comunicações entre serviços
+    prefer-ip-address: true
+
+    # Identificador único da instância no Eureka
+    #
+    # Exemplo:
+    # gateway:192.168.0.15:8080
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+  client:
+    # Registra o Gateway no Eureka Server
+    register-with-eureka: true
+
+    # Permite buscar serviços registrados
+    # no Eureka para roteamento automático
+    fetch-registry: true
+
+    service-url:
+      # URL do Eureka Server.
+      # Pode ser sobrescrita pela variável EUREKA_URL
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Endpoints do Actuator expostos via HTTP:
+        # health      → status da aplicação
+        # info        → informações da aplicação
+        # metrics     → métricas internas
+        # gateway     → informações das rotas do gateway
+        include: health,info,metrics,gateway
+
+  endpoint:
+    health:
+      # Exibe detalhes completos no endpoint /health
+      show-details: always
+
+logging:
+  level:
+    # Reduz verbosidade dos logs internos do Eureka
+    # Em ambiente de produção, WARN ou INFO é recomendado para evitar excesso de logs
+    # Em desenvolvimento, DEBUG pode ser útil para entender o comportamento do Eureka
+    "[org.springframework.cloud.gateway]": INFO
