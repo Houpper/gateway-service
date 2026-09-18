@@ -39,7 +39,7 @@ Ele utiliza o [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gat
 
 ## ⚙️ Variáveis de Ambiente
 
-A aplicação utiliza variáveis de ambiente para configuração, com suporte a valores padrão definidos no `application.yml`.
+A aplicação utiliza variáveis de ambiente para configuração, com suporte a valores padrões definidos no `application.yml`.
 
 Formato utilizado:
 
@@ -49,9 +49,9 @@ ${NOME_VARIAVEL:valor_padrao}
 
 ### 📋 Configurações disponíveis
 
-| Variável                  | Descrição                                                           | Default                                        |
-| --------------------------| ------------------------------------------------------------------- | ---------------------------------------------- |
-| `EUREKA_URL`            | URL do servidor Eureka utilizado para registro e descoberta         | `http://localhost:8761/eureka/`                |
+| Variável               | Descrição                                                              | Default                                       |
+|------------------------|------------------------------------------------------------------------|-----------------------------------------------|
+| `EUREKA_URL`           | URL do servidor Eureka utilizado para registro e descoberta            | `http://localhost:8761/eureka/`               |
 | `CORS_ALLOWED_ORIGINS` | Lista de origens autorizadas a consumir o Gateway via navegador (CORS) | `http://localhost:4200,http://localhost:3000` |
 
 > Caso a variável não seja definida, o valor padrão especificado será utilizado automaticamente pela aplicação.
@@ -77,7 +77,7 @@ No diretório raiz do projeto, execute um dos comandos abaixo:
 gradle clean build
 ```
 
-ou utilizando o wrapper do Gradle (**recomendado**):
+Ou utilizando o wrapper do Gradle (**recomendado**):
 
 ```bash
 ./gradlew clean build
@@ -158,8 +158,8 @@ Ao executar a task `docker`, o Gradle realiza automaticamente:
 
 A task possui validações para garantir consistência:
 
--   Caso o parâmetro `env` não seja informado, o build será interrompido
--   Caso seja informado um valor inválido, o build será interrompido
+-   Caso o parâmetro `env` não seja informado, o Build será interrompido
+-   Caso seja informado um valor inválido, o Build será interrompido
 
 Isso evita erros em pipelines e padroniza os ambientes.
 
@@ -193,13 +193,12 @@ Após isso, a pipeline pode:
 
 -   Utilize `clean` em pipelines para garantir builds consistentes
 -   Utilize `-Penv` para padronizar ambientes (`dev`, `test`, `homolog`, `prod`)
--   Não inclua etapas de deploy dentro do Gradle (responsabilidade da
-    pipeline)
+-   Não inclua etapas de deploy dentro do Gradle (responsabilidade dá pipeline)
 
 ## 🔄 Executar no docker como Dev
 
 ``` bash
-docker run -d --name gateway --restart always -p 8080:8080 -e EUREKA_URL=http://eureka:8761/eureka/ --network houpper-network gateway:dev
+docker run -d --name gateway-service --restart always -p 8080:8080 -e EUREKA_URL=http://eureka-service:8761/eureka/ --network houpper-network gateway-service:dev
 ```
 
 ---

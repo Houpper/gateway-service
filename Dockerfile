@@ -14,11 +14,11 @@ ENV TZ=America/Sao_Paulo
 # Copia aplicação
 COPY build/libs/gateway-service.jar ./app.jar
 
-EXPOSE 8761
+EXPOSE 8080
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-CMD wget --spider -q http://localhost:8761/actuator/health || exit 1
+CMD wget --spider -q http://localhost:8080/actuator/health || exit 1
 
 # Usuário da aplicação
 USER spring:spring
