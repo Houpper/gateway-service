@@ -1,6 +1,8 @@
 server:
   # Porta HTTP do API Gateway
   port: 8080
+  # TODO Documentar.
+  shutdown: graceful
 
   compression:
     # Habilita compressão HTTP (gzip),
@@ -21,6 +23,9 @@ spring:
   application:
     # Nome da aplicação registrado no Eureka
     name: gateway-service
+  lifecycle:
+    # TODO Documentar.
+    timeout-per-shutdown-phase: 20s
 
   cloud:
     gateway:
@@ -107,12 +112,14 @@ management:
         # info        → informações da aplicação
         # metrics     → métricas internas
         # gateway     → informações das rotas do gateway
-        include: health,info,metrics,gateway
+        include: health,info,metrics #,gateway
 
   endpoint:
     health:
-      # Exibe detalhes completos no endpoint /health
-      show-details: always
+      # Exibe detalhes completos no endpoint /health em dev pode ser usado (always)
+      show-details: never
+      probes:
+        enabled: true
 
 logging:
   level:
